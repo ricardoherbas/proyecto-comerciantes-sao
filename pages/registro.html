@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Usuario</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="burbujas">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+    <h1>
+      <img src="../assets/img/delfin-r.png" alt="Icono inicio" class="icono">
+      <img src="../assets/img/delfin-r.png" alt="Icono inicio" class="icono">
+      <img src="../assets/img/delfin-r.png" alt="Icono inicio" class="icono">
+      <img src="../assets/img/quiero.png" alt="Icono logo" class="iconoLogo">
+      <img src="../assets/img/caballito-r.png" alt="Icono final" class="icono">
+      <img src="../assets/img/caballito-r.png" alt="Icono final" class="icono">
+      <img src="../assets/img/caballito-r.png" alt="Icono final" class="icono">
+    </h1>
+    <h2>San Antonio Oeste – Las Grutas – San Antonio Este</h2>
+    <div id="estadisticasSitio" class="estadisticas-sitio">
+  <span>👤 Usuarios: <strong id="contadorUsuarios">0</strong></span>
+  <span>👁 Visitas: <strong id="contadorVisitas">0</strong></span>
+</div>
+  </header>
+  <nav>
+    <div class="menu-item">
+      <a href="../index.html">INICIO</a>
+    </div>
+    <div class="menu-item">
+      <a href="#">Necesito ayuda en casa</a>
+      <div class="submenu">
+        <a href="../pages/albañiles.html">albañiles</a>
+        <a href="../pages/gasistas.html">gasistas</a>
+        <a href="../pages/plomeros.html">plomeros</a>
+        <a href="../pages/electricistas.html">electricistas</a>
+        <a href="../pages/limpieza.html">limpieza</a>
+        <a href="../pages/tecnicosDeElectrodomesticos.html">tecnicos de electrodomesticos</a>
+      </div>
+    </div>
+    <div class="menu-item">
+      <a href="#">Quiero comprar algo</a>
+      <div class="submenu">
+        <a href="../pages/ropa.html">ropa</a>
+        <a href="../pages/terrenos.html">terrenos</a>
+        <a href="../pages/casas.html">casas</a>
+        <a href="../pages/alimentos.html">alimentos</a>
+        <a href="../pages/tecnologia.html">tecnologia</a>
+        <a href="../pages/deliverys.html">deliverys</a>
+        <a href="../pages/muebles.html">muebles</a>
+        <a href="../pages/perfumes.html">perfumes</a>
+        <a href="../pages/vehiculos.html">vehiculos</a>
+        <a href="../pages/bOtros.html">otros</a>
+      </div>
+    </div>
+    <div class="menu-item">
+      <a href="#">Busco un profesional</a>
+      <div class="submenu">
+        <a href="../pages/abogados.html">abogados</a>
+        <a href="../pages/contadores.html">contadores</a>
+        <a href="../pages/arquitectos.html">arquitectos</a>
+        <a href="../pages/informaticos.html">informaticos</a>
+        <a href="../pages/diseñadores.html">diseñadores</a>
+      </div>
+    </div>
+    <div class="menu-item">
+      <a href="#">Necesito alquilar</a>
+      <div class="submenu">
+        <a href="../pages/aCasas.html">casas</a>
+        <a href="../pages/aDepartamentos.html">departamentos</a>
+        <a href="../pages/aLocalesComerciales.html">locales comerciales</a>
+        <a href="../pages/aHerramientasyMaquinarias.html">herramientas y maquinarias</a>
+        <a href="../pages/aVehiculos.html">vehiculos</a>
+      </div>
+    </div>
+    <div class="menu-item">
+      <a href="#">Quiero capacitarme</a>
+      <div class="submenu">
+        <a href="../pages/gastronomia.html">gastronomía</a>
+        <a href="../pages/estetica.html">estética</a>
+        <a href="../pages/peluqueria.html">peluquería</a>
+        <a href="../pages/construccion.html">construcción</a>
+        <a href="../pages/mecanica.html">mecánica</a>
+        <a href="../pages/arte.html">arte</a>
+        <a href="../pages/informatica.html">informática</a>
+        <a href="../pages/plomeria.html">plomería</a>
+        <a href="../pages/electricidad.html">electricidad</a>
+        <a href="../pages/eOtros.html">otros</a>
+      </div>
+    </div>
+    <div class="menu-item" id="navSalir" style="display:none;">
+    <button id="logoutBtn">Cerrar Sesion</button>
+    </div>
+  </nav>
+  <section id="registro">
+  <h2>Crear nueva cuenta</h2>
+  <form id="registroForm" enctype="multipart/form-data">
+    <div>
+      <label>Nombre</label>
+      <input type="text" name="nombre" required>
+    </div>
+    <div>
+      <label>Apellido</label>
+      <input type="text" name="apellido" required>
+    </div>
+    <div>
+    <label>Sexo</label>
+    <div>
+        <input type="radio" name="sexo" value="masculino" required> Masculino
+        <input type="radio" name="sexo" value="femenino"> Femenino
+    </div>
+    </div>
+    <div>
+      <label>Email</label>
+      <input type="email" name="email" required>
+    </div>
+    <div>
+      <label>Contraseña</label>
+      <input type="password" name="password" required>
+    </div>
+    <div>
+      <label>Confirmar contraseña</label>
+      <input type="password" name="confirmPassword" required>
+    </div>
+    <button type="submit">Registrarse</button>
+  </form>
+  <p>¿Ya tienes cuenta? <a href="index.html">Inicia sesión</a></p>
+</section>
+
+
+<script src="../js/registro.js"></script>
+<script src="../js/auth.js"></script>
+</body>
+</html>
