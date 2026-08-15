@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const contadorVisitas=document.getElementById("contadorVisitas");
     if (!contadorUsuarios && !contadorVisitas) return;
     try {
-      const respuestaVisita=await fetch("http://localhost:3000/api/estadisticas/visita",{
+      const respuestaVisita=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas/visita",{
         method:"POST",
         headers:{"Content-Type":"application/json"},
         body:JSON.stringify({pagina:"index"})
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("No se pudo registrar la visita:",datosVisita);
         return;
       }
-      const respuestaEstadisticas=await fetch("http://localhost:3000/api/estadisticas?pagina=total");
+      const respuestaEstadisticas=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas?pagina=total");
       const data=await respuestaEstadisticas.json();
       if (!respuestaEstadisticas.ok) {
         console.error("No se pudieron obtener las estadísticas:",data);
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       try {
-        const response=await fetch("http://localhost:3000/api/login",{
+        const response=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/login",{
           method:"POST",
           headers:{"Content-Type":"application/json"},
           body:JSON.stringify({email,password})

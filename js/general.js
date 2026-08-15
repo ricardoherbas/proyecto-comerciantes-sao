@@ -66,7 +66,7 @@ async function iniciarPublicaciones(categoriaId) {
       const esCategoria=categoriaId!==undefined&&categoriaId!==null;
       const body=esCategoria?{categoria_id:Number(categoriaId)}:{pagina:"index"};
       const parametro=esCategoria?`categoria_id=${encodeURIComponent(categoriaId)}`:"pagina=index";
-      const respuestaVisita=await fetch("http://localhost:3000/api/estadisticas/visita",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+      const respuestaVisita=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas/visita",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
       if(!respuestaVisita.ok){
         console.error("No se pudo registrar la visita:",await respuestaVisita.text());
         return;
@@ -75,7 +75,7 @@ async function iniciarPublicaciones(categoriaId) {
       if(contadorVisitas&&datosVisita.visitas!==undefined)contadorVisitas.textContent=Number(datosVisita.visitas).toLocaleString("es-AR");
       const headers={};
       if(token)headers.Authorization=`Bearer ${token}`;
-      const respuestaEstadisticas=await fetch(`http://localhost:3000/api/estadisticas?${parametro}`,{method:"GET",headers});
+      const respuestaEstadisticas=await fetch(`https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas?${parametro}`,{method:"GET",headers});
       const data=await respuestaEstadisticas.json();
       if(!respuestaEstadisticas.ok){
         console.error("No se pudieron obtener las estadísticas:",data);
@@ -91,7 +91,7 @@ async function iniciarPublicaciones(categoriaId) {
     try{
       const headers={};
       if(token)headers.Authorization=`Bearer ${token}`;
-      const res=await fetch(`http://localhost:3000/api/categoria/${categoriaId}`,{headers});
+      const res=await fetch(`https://back-proyecto-comerciantes-sao.onrender.com/api/categoria/${categoriaId}`,{headers});
       const data=await res.json();
       if(!res.ok){
         mostrarMensaje(data.error||"No se pudo obtener la categoría.","error");
@@ -176,7 +176,7 @@ async function iniciarPublicaciones(categoriaId) {
     boton.disabled=true;
     boton.textContent="Eliminando...";
     try{
-      const res=await fetch(`http://localhost:3000/api/publicacion/${id}`,{method:"DELETE",headers:{Authorization:`Bearer ${token}`}});
+      const res=await fetch(`https://back-proyecto-comerciantes-sao.onrender.com/api/publicacion/${id}`,{method:"DELETE",headers:{Authorization:`Bearer ${token}`}});
       const data=await res.json();
       if(!res.ok){
         mostrarMensaje(data.error||data.msg||"No se pudo eliminar la publicación.","error");
@@ -198,7 +198,7 @@ async function iniciarPublicaciones(categoriaId) {
     try{
       const headers={};
       if(token)headers.Authorization=`Bearer ${token}`;
-      const res=await fetch(`http://localhost:3000/api/publicacion?categoria_id=${categoriaId}`,{headers});
+      const res=await fetch(`https://back-proyecto-comerciantes-sao.onrender.com/api/publicacion?categoria_id=${categoriaId}`,{headers});
       const data=await res.json();
       const container=document.getElementById("publicacionesContainer");
       if(!container)return;
@@ -307,7 +307,7 @@ async function iniciarPublicaciones(categoriaId) {
         if(foto1)formData.append("foto1",await redimensionarImagen(foto1,800));
         if(foto2)formData.append("foto2",await redimensionarImagen(foto2,800));
         if(btnGuardar)btnGuardar.textContent="Guardando...";
-        const res=await fetch("http://localhost:3000/api/publicacion",{method:"POST",headers:{Authorization:`Bearer ${token}`},body:formData});
+        const res=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/publicacion",{method:"POST",headers:{Authorization:`Bearer ${token}`},body:formData});
         const data=await res.json();
         if(!res.ok){
           mostrarMensaje(Array.isArray(data.error)?data.error.join(" "):data.error||"Error al crear la publicación.","error");

@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/usuario", {
+      const response = await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/usuario", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
