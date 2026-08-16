@@ -332,6 +332,7 @@ async function iniciarPublicaciones(categoriaId) {
     });
   }
   await cargarEstadisticas();
+  setInterval(cargarEstadisticas, 60 * 60 * 1000);
   await cargarCategoria();
   await cargarPublicaciones();
 }

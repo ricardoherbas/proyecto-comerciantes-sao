@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Registro de Usuario</title>
+  <title>Términos y Condiciones</title>
   <link rel="stylesheet" href="../css/styles.css">
 </head>
 <body>
@@ -92,48 +92,54 @@
     </div>
   </nav>
 
-  <section id="registro">
-    <h2>Crear nueva cuenta</h2>
-    <form id="registroForm" enctype="multipart/form-data">
-      <div>
-        <label>Nombre</label>
-        <input type="text" name="nombre" required>
-      </div>
-      <div>
-        <label>Apellido</label>
-        <input type="text" name="apellido" required>
-      </div>
-      <div>
-        <label>Sexo</label>
-        <div>
-          <input type="radio" name="sexo" value="masculino" required> Masculino
-          <input type="radio" name="sexo" value="femenino"> Femenino
-        </div>
-      </div>
-      <div>
-        <label>Email</label>
-        <input type="email" name="email" required>
-      </div>
-      <div>
-        <label>Contraseña</label>
-        <input type="password" name="password" required>
-      </div>
-      <div>
-        <label>Confirmar contraseña</label>
-        <input type="password" name="confirmPassword" required>
-      </div>
-      <div>
-        <label>
-          <input type="checkbox" name="aceptaTerminos" required>
-          Acepto los <a href="../pages/terminos.html" target="_blank">Términos y Condiciones</a>
-        </label>
-      </div>
-      <button type="submit">Registrarse</button>
-    </form>
-    <p>¿Ya tienes cuenta? <a href="../index.html">Inicia sesión</a></p>
-  </section>
+  <section id="terminos">
+    <h2>Términos y Condiciones de Uso</h2>
 
-  <script src="../js/registro.js"></script>
-  <script src="../js/auth.js"></script>
+    <article>
+      <h3>1. Aceptación</h3>
+      <p>Al registrarte en <strong>QUI3RO.COM</strong> aceptás cumplir con estos Términos y Condiciones.</p>
+    </article>
+
+    <article>
+      <h3>2. Uso del sitio</h3>
+      <p>El usuario se compromete a utilizar el sitio de manera responsable, sin publicar contenido ilegal, ofensivo o que infrinja derechos de terceros.</p>
+    </article>
+
+    <article>
+      <h3>3. Publicaciones</h3>
+      <p>Las publicaciones son responsabilidad exclusiva de cada usuario. QUI3RO.COM no se hace responsable por la veracidad ni calidad de los productos o servicios ofrecidos.</p>
+    </article>
+
+    <article>
+      <h3>4. Datos personales</h3>
+      <p>Los datos ingresados se utilizan únicamente para el funcionamiento del sitio. No serán compartidos con terceros sin consentimiento.</p>
+    </article>
+
+    <article>
+      <h3>5. Modificaciones</h3>
+      <p>QUI3RO.COM puede actualizar estos Términos y Condiciones en cualquier momento. Los cambios se publicarán en esta página.</p>
+    </article>
+
+    <article>
+      <h3>6. Responsabilidad del usuario</h3>
+      <p>El usuario es responsable de la información que publica y de las transacciones que realiza a través del sitio.</p>
+    </article>
+
+    <article>
+      <h3>7. Limitación de responsabilidad</h3>
+      <p>QUI3RO.COM no garantiza la disponibilidad continua del servicio ni se responsabiliza por daños derivados del uso del sitio.</p>
+    </article>
+
+    <article>
+      <h3>8. Jurisdicción aplicable</h3>
+      <p>Estos Términos y Condiciones se rigen por las leyes de la República Argentina. Cualquier conflicto será resuelto en los tribunales competentes de Río Negro.</p>
+    </article>
+
+    <div style="margin-top:20px;">
+      <a href="../pages/registro.html">
+        <button type="button">Volver al Registro</button>
+      </a>
+    </div>
+  </section>
 </body>
 </html>

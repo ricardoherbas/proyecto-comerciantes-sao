@@ -18,7 +18,7 @@ async function registrarVisita(){
   const claveVisita=`visita_${pagina}`;
   if(sessionStorage.getItem(claveVisita))return;
   try{
-    const res=await fetch("http://localhost:3000/api/estadisticas/visita",{
+    const res=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas/visita",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({pagina:"index"})
@@ -34,7 +34,7 @@ async function cargarEstadisticasSitio(){
   const contadorVisitas=document.getElementById("contadorVisitas");
   if(!contadorUsuarios&&!contadorVisitas)return;
   try{
-    const res=await fetch("http://localhost:3000/api/estadisticas?pagina=index");
+    const res=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas?pagina=index");
     const data=await res.json();
     if(!res.ok)throw new Error(data.error||`HTTP ${res.status}`);
     if(contadorUsuarios)contadorUsuarios.textContent=Number(data.usuarios||0).toLocaleString("es-AR");

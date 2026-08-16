@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => {
         mensajeElement.remove();
-
         if (contenedor.children.length === 0) {
           contenedor.remove();
         }
@@ -72,29 +71,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const email = e.target.email.value.trim();
     const password = e.target.password.value;
     const confirmPassword = e.target.confirmPassword.value;
+    const aceptaTerminos = e.target.aceptaTerminos.checked;
 
     if (password !== confirmPassword) {
       mostrarMensaje("Las contraseñas no coinciden.", "error");
       return;
     }
 
+    if (!aceptaTerminos) {
+      mostrarMensaje("Debes aceptar los Términos y Condiciones.", "error");
+      return;
+    }
+
     try {
       const response = await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/usuario", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          nombre,
-          apellido,
-          sexo,
-          email,
-          password
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nombre, apellido, sexo, email, password })
       });
 
       let data = {};
-
       try {
         data = await response.json();
       } catch {
@@ -102,29 +98,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (response.ok) {
-        mostrarMensaje(
-          "Usuario registrado correctamente.",
-          "exito"
-        );
-
+        mostrarMensaje("Usuario registrado correctamente.", "exito");
         setTimeout(() => {
           window.location.href = "../index.html";
         }, 1500);
-
       } else {
-        mostrarMensaje(
-          data.error || "Error al registrar usuario.",
-          "error"
-        );
+        mostrarMensaje(data.error || "Error al registrar usuario.", "error");
       }
-
     } catch (error) {
       console.error("Error en registro:", error);
-
-      mostrarMensaje(
-        "Error de conexión con el servidor.",
-        "error"
-      );
+      mostrarMensaje("Error de conexión con el servidor.", "error");
     }
   });
 });

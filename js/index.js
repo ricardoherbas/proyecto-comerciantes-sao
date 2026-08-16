@@ -123,4 +123,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   cargarEstadisticas();
+  setInterval(cargarEstadisticas, 60 * 60 * 1000);
 });

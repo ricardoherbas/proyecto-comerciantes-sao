@@ -66,7 +66,7 @@ nav{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;padding:10px;bac
 .publicidades{width:94%;max-width:1400px;margin:25px auto;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
 .publicidad{width:100%;height:120px;border:2px solid #ccc;border-radius:8px;overflow:hidden;box-shadow:0 4px 8px rgba(0,0,0,.2);position:relative;background:#fff}
 .slider{display:flex;width:300%;height:100%;animation:slide 12s infinite}
-.slider img{width:33.333333%;height:100%;object-fit:cover;flex-shrink:0}
+.slider img{width:33.333333%;height:100%;object-fit:fill;flex-shrink:0}
 .publicidad:nth-child(1) .slider{animation-delay:0s}
 .publicidad:nth-child(2) .slider{animation-delay:-2s}
 .publicidad:nth-child(3) .slider{animation-delay:-4s}
@@ -344,3 +344,53 @@ body.visor-abierto{overflow:hidden}
   .btn-eliminar-publicacion{padding:4px 6px;font-size:.54rem}
   .btn-eliminar-publicacion::before{font-size:.56rem}
 }
+
+.cartel-promocion {
+  background: linear-gradient(90deg, #0077cc, #00c6ff);
+  color: #fff;
+  text-align: center;
+  margin: 0px auto;
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  letter-spacing: 0.5px;
+  animation: fadeIn 1.2s ease-in-out;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.cartel-promocion .destacado {
+  font-weight: 200;
+  text-transform: uppercase;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .cartel-promocion {
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
+}
+.slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 33.333%;   /* igual que las imágenes */
+  height: 100%;
+  flex-shrink: 0;
+  background: #ddd;
+}
+.numero {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #000;
+}
+
