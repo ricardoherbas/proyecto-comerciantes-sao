@@ -391,17 +391,20 @@ body.visor-abierto{overflow:hidden}
 }
 
 .numero {
-  max-width: 100%;    /* nunca más ancho que el recuadro */
-  font-size: clamp(1rem, min(8vw, 8vh), 3rem); /* escala con pantalla pero limitado */
+  font-size: 1.5rem;   /* tamaño base en PC */
   font-weight: bold;
   color: white;
+  max-width: 100%;
   text-align: center;
-  line-height: 1;     /* evita que se expanda verticalmente */
-  word-wrap: break-word; /* si fuera necesario, corta el texto */
+  line-height: 1;
+  word-break: break-word;
 }
 
-
-
+@media (max-width: 650px) {
+  .numero {
+    font-size: 1rem;   /* más chico en pantallas pequeñas */
+  }
+}
 
 
 
