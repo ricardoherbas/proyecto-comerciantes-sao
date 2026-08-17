@@ -386,11 +386,11 @@ body.visor-abierto{overflow:hidden}
   width: 33.333%;   /* igual que las imágenes */
   height: 100%;
   flex-shrink: 0;
-  background: #ddd;
+  background: #e0429f;
 }
 .numero {
   font-size: 2rem;
   font-weight: bold;
-  color: #000;
+  color: #f3f1f1f1;
 }
 
