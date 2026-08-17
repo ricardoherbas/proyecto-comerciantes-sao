@@ -390,10 +390,11 @@ body.visor-abierto{overflow:hidden}
 }
 
 .numero {
-  font-size: min(8vw, 8vh); /* se adapta al ancho y alto de la pantalla */
+  font-size: clamp(1rem, 80%, 5rem); /* escala dentro del recuadro */
   font-weight: bold;
   color: white;
 }
+
 
 
 
