@@ -402,7 +402,7 @@ body.visor-abierto{overflow:hidden}
 
 @media (max-width: 650px) {
   .numero {
-    font-size: 1rem;   /* más chico en pantallas pequeñas */
+    font-size: 0.5rem;   /* más chico en pantallas pequeñas */
   }
 }
 
