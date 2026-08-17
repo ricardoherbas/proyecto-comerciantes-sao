@@ -383,15 +383,17 @@ body.visor-abierto{overflow:hidden}
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 33.333%;   /* igual que las imágenes */
+  width: 33.333%;
   height: 100%;
   flex-shrink: 0;
   background: purple;
 }
+
 .numero {
-  font-size: clamp(1.2rem, 3vw, 2.5rem); /* mínimo 1.2rem, escala con viewport, máximo 2.5rem */
+  font-size: 5em;   /* escala según el tamaño del contenedor */
   font-weight: bold;
   color: white;
 }
+
 
 
