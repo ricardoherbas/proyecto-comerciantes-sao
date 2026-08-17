@@ -389,8 +389,9 @@ body.visor-abierto{overflow:hidden}
   background: purple;
 }
 .numero {
-  font-size: 2rem;
+  font-size: clamp(1.2rem, 3vw, 2.5rem); /* mínimo 1.2rem, escala con viewport, máximo 2.5rem */
   font-weight: bold;
   color: white;
 }
+
 
