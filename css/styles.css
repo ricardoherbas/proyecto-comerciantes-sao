@@ -387,13 +387,19 @@ body.visor-abierto{overflow:hidden}
   height: 100%;
   flex-shrink: 0;
   background: purple;
+  overflow: hidden;   /* oculta cualquier desborde */
 }
 
 .numero {
-  font-size: clamp(1rem, min(8vw, 8vh), 3rem);
+  max-width: 100%;    /* nunca más ancho que el recuadro */
+  font-size: clamp(1rem, min(8vw, 8vh), 3rem); /* escala con pantalla pero limitado */
   font-weight: bold;
   color: white;
+  text-align: center;
+  line-height: 1;     /* evita que se expanda verticalmente */
+  word-wrap: break-word; /* si fuera necesario, corta el texto */
 }
+
 
 
 
