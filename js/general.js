@@ -1,7 +1,8 @@
-export function initPublicaciones(categoriaId) {
+import { supabase } from "./supabase.js";
+export function initPublicaciones(categoriaId){
   iniciarPublicaciones(categoriaId);
 }
-async function iniciarPublicaciones(categoriaId) {
+async function iniciarPublicaciones(categoriaId){
   const token=localStorage.getItem("token");
   const logoutBtn=document.getElementById("logoutBtn");
   const btnAgregar=document.getElementById("btnAgregarPublicacion");
@@ -16,7 +17,13 @@ async function iniciarPublicaciones(categoriaId) {
       const payload=JSON.parse(atob(token.split(".")[1]));
       usuarioEmail=payload.email;
       usuarioId=payload.id;
-    }catch(err){console.error("Error al decodificar token:",err);}
+    }catch(error){
+      console.error("Error al decodificar token:",error);
+    }
+  }
+  function escaparHTML(texto){
+    if(texto===null||texto===undefined)return "";
+    return String(texto).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
   function mostrarMensaje(mensaje,tipo="exito"){
     let contenedor=document.getElementById("contenedorMensajes");
@@ -35,21 +42,11 @@ async function iniciarPublicaciones(categoriaId) {
       mensajeElement.classList.remove("mostrar");
       setTimeout(()=>{
         mensajeElement.remove();
-        if(contenedor.children.length===0) contenedor.remove();
+        if(contenedor.children.length===0)contenedor.remove();
       },250);
     };
     mensajeElement.querySelector(".mensaje-alerta-cerrar").addEventListener("click",cerrar);
     setTimeout(cerrar,4000);
-  }
-  if(logoutBtn){
-    logoutBtn.addEventListener("click",()=>{
-      localStorage.removeItem("token");
-      window.location.href="../index.html";
-    });
-  }
-  function escaparHTML(texto){
-    if(texto===null||texto===undefined)return "";
-    return String(texto).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
   }
   function prepararUrl(url){
     if(!url)return "";
@@ -58,32 +55,41 @@ async function iniciarPublicaciones(categoriaId) {
     if(url.startsWith("http://")||url.startsWith("https://"))return url;
     return `https://${url}`;
   }
+  if(logoutBtn){
+    logoutBtn.addEventListener("click",()=>{
+      localStorage.removeItem("token");
+      window.location.href="../index.html";
+    });
+  }
   async function cargarEstadisticas(){
     const contadorUsuarios=document.getElementById("contadorUsuarios");
     const contadorVisitas=document.getElementById("contadorVisitas");
     if(!contadorUsuarios&&!contadorVisitas)return;
     try{
-      const esCategoria=categoriaId!==undefined&&categoriaId!==null;
-      const body=esCategoria?{categoria_id:Number(categoriaId)}:{pagina:"index"};
-      const parametro=esCategoria?`categoria_id=${encodeURIComponent(categoriaId)}`:"pagina=index";
-      const respuestaVisita=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas/visita",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-      if(!respuestaVisita.ok){
-        console.error("No se pudo registrar la visita:",await respuestaVisita.text());
-        return;
+      const claveVisita=`visita_categoria_${categoriaId}`;
+      let visitas=null;
+      if(!sessionStorage.getItem(claveVisita)){
+        const {data,error}=await supabase.rpc("registrar_visita_categoria",{p_categoria_id:Number(categoriaId)});
+        if(error)throw error;
+        visitas=typeof data==="string"?JSON.parse(data):data;
+        sessionStorage.setItem(claveVisita,"1");
+      }else{
+        const {data,error}=await supabase.rpc("obtener_visitas_categoria",{p_categoria_id:Number(categoriaId)});
+        if(error)throw error;
+        visitas={visitas:data};
       }
-      const datosVisita=await respuestaVisita.json();
-      if(contadorVisitas&&datosVisita.visitas!==undefined)contadorVisitas.textContent=Number(datosVisita.visitas).toLocaleString("es-AR");
-      const headers={};
-      if(token)headers.Authorization=`Bearer ${token}`;
-      const respuestaEstadisticas=await fetch(`https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas?${parametro}`,{method:"GET",headers});
-      const data=await respuestaEstadisticas.json();
-      if(!respuestaEstadisticas.ok){
-        console.error("No se pudieron obtener las estadísticas:",data);
-        return;
+      if(contadorVisitas&&visitas?.visitas!==undefined){
+        contadorVisitas.textContent=Number(visitas.visitas).toLocaleString("es-AR");
       }
-      if(contadorUsuarios)contadorUsuarios.textContent=Number(data.usuarios||0).toLocaleString("es-AR");
-      if(contadorVisitas)contadorVisitas.textContent=Number(data.visitas||0).toLocaleString("es-AR");
-    }catch(error){console.error("Error al cargar estadísticas:",error);}
+      const {data,error}=await supabase.rpc("obtener_estadisticas_generales");
+      if(error)throw error;
+      const estadisticas=typeof data==="string"?JSON.parse(data):data;
+      if(contadorUsuarios){
+        contadorUsuarios.textContent=Number(estadisticas?.usuarios||0).toLocaleString("es-AR");
+      }
+    }catch(error){
+      console.error("Error al cargar estadísticas:",error);
+    }
   }
   let nombreCategoria="";
   async function cargarCategoria(){
@@ -105,14 +111,20 @@ async function iniciarPublicaciones(categoriaId) {
   }
   function redimensionarImagen(file,maxSize=800){
     return new Promise((resolve,reject)=>{
-      if(!file||!file.type.startsWith("image/")){resolve(file);return;}
+      if(!file||!file.type.startsWith("image/")){
+        resolve(file);
+        return;
+      }
       const imagen=new Image();
       const reader=new FileReader();
       reader.onload=e=>{
         imagen.onload=()=>{
           let ancho=imagen.width;
           let alto=imagen.height;
-          if(ancho<=maxSize&&alto<=maxSize){resolve(file);return;}
+          if(ancho<=maxSize&&alto<=maxSize){
+            resolve(file);
+            return;
+          }
           const escala=Math.min(maxSize/ancho,maxSize/alto);
           ancho=Math.round(ancho*escala);
           alto=Math.round(alto*escala);
@@ -124,7 +136,10 @@ async function iniciarPublicaciones(categoriaId) {
           const tipo=file.type==="image/png"?"image/png":"image/jpeg";
           const calidad=tipo==="image/jpeg"?0.85:undefined;
           canvas.toBlob(blob=>{
-            if(!blob){reject(new Error("No se pudo procesar la imagen."));return;}
+            if(!blob){
+              reject(new Error("No se pudo procesar la imagen."));
+              return;
+            }
             const extension=tipo==="image/png"?"png":"jpg";
             const nombreOriginal=file.name.replace(/\.[^/.]+$/,"");
             resolve(new File([blob],`${nombreOriginal}.${extension}`,{type:tipo,lastModified:Date.now()}));
@@ -150,10 +165,14 @@ async function iniciarPublicaciones(categoriaId) {
       const imagen=document.getElementById("visorFotoImagen");
       if(imagen)imagen.src="";
     };
-    visor.addEventListener("click",e=>{if(e.target===visor)cerrar();});
+    visor.addEventListener("click",e=>{
+      if(e.target===visor)cerrar();
+    });
     visor.querySelector(".visor-foto-cerrar").addEventListener("click",cerrar);
     document.getElementById("visorFotoImagen").addEventListener("click",e=>e.stopPropagation());
-    document.addEventListener("keydown",e=>{if(e.key==="Escape"&&visor.classList.contains("activo"))cerrar();});
+    document.addEventListener("keydown",e=>{
+      if(e.key==="Escape"&&visor.classList.contains("activo"))cerrar();
+    });
   }
   function abrirVisorFoto(url,alt="Imagen ampliada"){
     crearVisorFoto();
@@ -176,7 +195,10 @@ async function iniciarPublicaciones(categoriaId) {
     boton.disabled=true;
     boton.textContent="Eliminando...";
     try{
-      const res=await fetch(`https://back-proyecto-comerciantes-sao.onrender.com/api/publicacion/${id}`,{method:"DELETE",headers:{Authorization:`Bearer ${token}`}});
+      const res=await fetch(`https://back-proyecto-comerciantes-sao.onrender.com/api/publicacion/${id}`,{
+        method:"DELETE",
+        headers:{Authorization:`Bearer ${token}`}
+      });
       const data=await res.json();
       if(!res.ok){
         mostrarMensaje(data.error||data.msg||"No se pudo eliminar la publicación.","error");
@@ -203,8 +225,14 @@ async function iniciarPublicaciones(categoriaId) {
       const container=document.getElementById("publicacionesContainer");
       if(!container)return;
       container.innerHTML="";
-      if(!res.ok){container.innerHTML="<p>Error al cargar publicaciones.</p>";return;}
-      if(!Array.isArray(data)||data.length===0){container.innerHTML="<p>No hay publicaciones aún.</p>";return;}
+      if(!res.ok){
+        container.innerHTML="<p>Error al cargar publicaciones.</p>";
+        return;
+      }
+      if(!Array.isArray(data)||data.length===0){
+        container.innerHTML="<p>No hay publicaciones aún.</p>";
+        return;
+      }
       data.forEach(pub=>{
         const card=document.createElement("div");
         card.classList.add("publicacion-card");
@@ -220,13 +248,19 @@ async function iniciarPublicaciones(categoriaId) {
         const tiktokUrl=prepararUrl(pub.tiktok);
         const fecha=pub.fecha?new Date(pub.fecha).toLocaleString("es-AR"):"";
         let fotosHTML="";
-        if(pub.url_foto1)fotosHTML+=`<img src="${escaparHTML(pub.url_foto1)}" alt="Foto 1" class="publicacion-foto foto1">`;
-        if(pub.url_foto2)fotosHTML+=`<img src="${escaparHTML(pub.url_foto2)}" alt="Foto 2" class="publicacion-foto foto2">`;
+        if(pub.url_foto1){
+          fotosHTML+=`<img src="${escaparHTML(pub.url_foto1)}" alt="Foto 1" class="publicacion-foto foto1">`;
+        }
+        if(pub.url_foto2){
+          fotosHTML+=`<img src="${escaparHTML(pub.url_foto2)}" alt="Foto 2" class="publicacion-foto foto2">`;
+        }
         const puedeEliminar=usuarioId!==null&&Number(pub.usuario_id)===Number(usuarioId);
         card.innerHTML=`${descripcion?`<div class="publicacion-descripcion"><strong>Descripción: </strong>${descripcion}</div>`:""}<div class="publicacion-info"><div class="publicacion-dato"><strong>Categoría:</strong>${categoria||"No informada"}</div><div class="publicacion-dato"><strong>Nombre y Apellido:</strong>${nombre} ${apellido}</div><div class="publicacion-dato"><strong>Email:</strong>${email||"No informado"}</div><div class="publicacion-dato"><strong>Celular:</strong>${celular||"No informado"}</div><div class="publicacion-dato"><strong>Localidad:</strong>${localidad||"No informada"}</div><div class="publicacion-dato"><strong>Facebook:</strong>${facebookUrl?`<a href="${escaparHTML(facebookUrl)}" target="_blank" rel="noopener noreferrer">${escaparHTML(facebookUrl)}</a>`:"No informado"}</div><div class="publicacion-dato"><strong>Instagram:</strong>${instagramUrl?`<a href="${escaparHTML(instagramUrl)}" target="_blank" rel="noopener noreferrer">${escaparHTML(instagramUrl)}</a>`:"No informado"}</div><div class="publicacion-dato"><strong>TikTok:</strong>${tiktokUrl?`<a href="${escaparHTML(tiktokUrl)}" target="_blank" rel="noopener noreferrer">${escaparHTML(tiktokUrl)}</a>`:"No informado"}</div>${fecha?`<div class="publicacion-fecha">Fecha: ${fecha}</div>`:""}</div>${fotosHTML?`<div class="publicacion-fotos">${fotosHTML}</div>`:""}${puedeEliminar?`<div class="publicacion-acciones"><button type="button" class="btn-eliminar-publicacion" data-id="${pub.id}">Eliminar publicación</button></div>`:""}`;
         container.appendChild(card);
         const btnEliminar=card.querySelector(".btn-eliminar-publicacion");
-        if(btnEliminar)btnEliminar.addEventListener("click",()=>eliminarPublicacion(btnEliminar.dataset.id,btnEliminar));
+        if(btnEliminar){
+          btnEliminar.addEventListener("click",()=>eliminarPublicacion(btnEliminar.dataset.id,btnEliminar));
+        }
       });
       activarVisoresFotos();
     }catch(error){
@@ -257,7 +291,11 @@ async function iniciarPublicaciones(categoriaId) {
       const selectLocalidad=document.getElementById("localidad");
       if(selectLocalidad){
         selectLocalidad.innerHTML="";
-        const localidades=[{valor:"San Antonio Oeste",texto:"San Antonio Oeste"},{valor:"Las Grutas",texto:"Las Grutas"},{valor:"San Antonio Este",texto:"San Antonio Este"}];
+        const localidades=[
+          {valor:"San Antonio Oeste",texto:"San Antonio Oeste"},
+          {valor:"Las Grutas",texto:"Las Grutas"},
+          {valor:"San Antonio Este",texto:"San Antonio Este"}
+        ];
         const opcionInicial=document.createElement("option");
         opcionInicial.value="";
         opcionInicial.textContent="Seleccionar localidad";
@@ -307,7 +345,11 @@ async function iniciarPublicaciones(categoriaId) {
         if(foto1)formData.append("foto1",await redimensionarImagen(foto1,800));
         if(foto2)formData.append("foto2",await redimensionarImagen(foto2,800));
         if(btnGuardar)btnGuardar.textContent="Guardando...";
-        const res=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/publicacion",{method:"POST",headers:{Authorization:`Bearer ${token}`},body:formData});
+        const res=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/publicacion",{
+          method:"POST",
+          headers:{Authorization:`Bearer ${token}`},
+          body:formData
+        });
         const data=await res.json();
         if(!res.ok){
           mostrarMensaje(Array.isArray(data.error)?data.error.join(" "):data.error||"Error al crear la publicación.","error");
@@ -332,7 +374,6 @@ async function iniciarPublicaciones(categoriaId) {
     });
   }
   await cargarEstadisticas();
-  setInterval(cargarEstadisticas, 60 * 60 * 1000);
   await cargarCategoria();
   await cargarPublicaciones();
 }

@@ -1,3 +1,4 @@
+import { supabase } from "./supabase.js";
 document.addEventListener("DOMContentLoaded",async()=>{
   const token=localStorage.getItem("token");
   const navSalir=document.getElementById("navSalir");
@@ -9,38 +10,42 @@ document.addEventListener("DOMContentLoaded",async()=>{
     if(navSalir)navSalir.style.display="none";
     if(navAgregar)navAgregar.style.display="none";
   }
-  await registrarVisita();
-  await cargarEstadisticasSitio();
+  if(obtenerNombrePagina()==="index"){
+    await registrarVisitaIndex();
+    await cargarEstadisticasGenerales();
+  }
 });
-async function registrarVisita(){
-  const pagina=obtenerNombrePagina();
-  if(pagina!=="index")return;
-  const claveVisita=`visita_${pagina}`;
+async function registrarVisitaIndex(){
+  const claveVisita="visita_index";
   if(sessionStorage.getItem(claveVisita))return;
   try{
-    const res=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas/visita",{
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({pagina:"index"})
-    });
-    if(!res.ok)throw new Error(`HTTP ${res.status}`);
+    const {data,error}=await supabase.rpc("registrar_visita_index");
+    if(error)throw error;
     sessionStorage.setItem(claveVisita,"1");
+    const contadorVisitas=document.getElementById("contadorVisitas");
+    if(contadorVisitas&&data?.visitas!==undefined){
+      contadorVisitas.textContent=Number(data.visitas).toLocaleString("es-AR");
+    }
   }catch(error){
-    console.error("Error al registrar visita:",error);
+    console.error("Error al registrar visita del index:",error);
   }
 }
-async function cargarEstadisticasSitio(){
+async function cargarEstadisticasGenerales(){
   const contadorUsuarios=document.getElementById("contadorUsuarios");
   const contadorVisitas=document.getElementById("contadorVisitas");
   if(!contadorUsuarios&&!contadorVisitas)return;
   try{
-    const res=await fetch("https://back-proyecto-comerciantes-sao.onrender.com/api/estadisticas?pagina=index");
-    const data=await res.json();
-    if(!res.ok)throw new Error(data.error||`HTTP ${res.status}`);
-    if(contadorUsuarios)contadorUsuarios.textContent=Number(data.usuarios||0).toLocaleString("es-AR");
-    if(contadorVisitas)contadorVisitas.textContent=Number(data.visitas||0).toLocaleString("es-AR");
+    const {data,error}=await supabase.rpc("obtener_estadisticas_generales");
+    if(error)throw error;
+    const estadisticas=typeof data==="string"?JSON.parse(data):data;
+    if(contadorUsuarios){
+      contadorUsuarios.textContent=Number(estadisticas?.usuarios||0).toLocaleString("es-AR");
+    }
+    if(contadorVisitas){
+      contadorVisitas.textContent=Number(estadisticas?.visitas||0).toLocaleString("es-AR");
+    }
   }catch(error){
-    console.error("Error al cargar estadísticas:",error);
+    console.error("Error al cargar estadísticas generales:",error);
   }
 }
 function obtenerNombrePagina(){
