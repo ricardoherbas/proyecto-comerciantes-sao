@@ -20,11 +20,13 @@ async function registrarVisitaIndex(){
   if(sessionStorage.getItem(claveVisita))return;
   try{
     const {data,error}=await supabase.rpc("registrar_visita_index");
+    console.log("Resultado registrar_visita_index:",{data,error});
     if(error)throw error;
     sessionStorage.setItem(claveVisita,"1");
     const contadorVisitas=document.getElementById("contadorVisitas");
-    if(contadorVisitas&&data?.visitas!==undefined){
-      contadorVisitas.textContent=Number(data.visitas).toLocaleString("es-AR");
+    const resultado=typeof data==="string"?JSON.parse(data):data;
+    if(contadorVisitas&&resultado?.visitas!==undefined){
+      contadorVisitas.textContent=Number(resultado.visitas).toLocaleString("es-AR");
     }
   }catch(error){
     console.error("Error al registrar visita del index:",error);
@@ -36,6 +38,7 @@ async function cargarEstadisticasGenerales(){
   if(!contadorUsuarios&&!contadorVisitas)return;
   try{
     const {data,error}=await supabase.rpc("obtener_estadisticas_generales");
+    console.log("Resultado obtener_estadisticas_generales:",{data,error});
     if(error)throw error;
     const estadisticas=typeof data==="string"?JSON.parse(data):data;
     if(contadorUsuarios){
