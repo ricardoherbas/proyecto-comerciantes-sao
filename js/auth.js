@@ -1,4 +1,4 @@
-import { supabase } from "./supabase.js";
+import { supabase } from "./supabase";
 console.log("AUTH.JS CARGADO");
 document.addEventListener("DOMContentLoaded",async()=>{
   console.log("DOMContentLoaded EJECUTADO EN AUTH");
